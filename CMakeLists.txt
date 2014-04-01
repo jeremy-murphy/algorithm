@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.6)
+project(speed_test)
+find_package(Boost 1.48.0 REQUIRED COMPONENTS system timer)
+add_executable(speed_test speed_test.cpp)
+include_directories(${Boost_INCLUDE_DIRS} "./include")
+link_directories(${Boost_LIBRARY_DIRS})
+target_link_libraries(speed_test ${Boost_LIBRARIES})
