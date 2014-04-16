@@ -76,7 +76,7 @@ void test(Distribution dist, unsigned const seed = 0, unsigned const max2 = 26)
 {
     // typedef typename std::vector<T>::iterator iterator;
     typedef T value_type;
-    typedef identity<T> converter;
+    typedef transformation::identity<T> converter;
     typedef typename std::vector<value_type>::const_iterator const_iterator;
 
     std::cout << "=== Test (seed = " << seed << ", T = " << typeid(T).name() << "). ===" << std::endl;
