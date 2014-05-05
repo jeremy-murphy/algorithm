@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(speed_test)
-find_package(Boost 1.48.0 REQUIRED COMPONENTS system timer test_exec_monitor)
+find_package(Boost 1.48.0 REQUIRED COMPONENTS test_exec_monitor)
+add_compile_options("-std=c++0x")
 add_executable(speed_test speed_test.cpp)
 add_executable(counting_test test/stable_counting_test.cpp)
 add_executable(radix_test test/stable_radix_test.cpp)
