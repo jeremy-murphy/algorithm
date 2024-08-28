@@ -1,3 +1,5 @@
+set(Boost_NO_SYSTEM_PATHS ON)
+set(BOOST_ROOT "~/projects/boost")
 find_package(Boost REQUIRED COMPONENTS chrono filesystem system timer unit_test_framework)
 
 add_executable(search_test1 search_test1.cpp)
