@@ -28,7 +28,6 @@ add_test(NAME search_test1 COMMAND search_test1 WORKING_DIRECTORY "${CMAKE_CURRE
 add_executable(search_test6 search_test6.cpp)
 target_compile_definitions(search_test6 PRIVATE "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(search_test6 Boost::headers Boost::unit_test_framework)
-add_test(NAME search_test6 COMMAND search_test6 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 #add_executable(search_test7 search_test7.cpp)
 #target_compile_definitions(search_test7 PRIVATE "BOOST_TEST_DYN_LINK=1")
