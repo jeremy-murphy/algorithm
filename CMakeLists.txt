@@ -33,6 +33,7 @@ target_link_libraries(boost_algorithm
     Boost::unordered
 )
 
+include(CTest)
 if(BUILD_TESTING AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/test/CMakeLists.txt")
 
   add_subdirectory(test)
