@@ -1,3 +1,5 @@
+set(CMAKE_CXX_STANDARD 11)
+
 set(Boost_NO_SYSTEM_PATHS ON)
 set(BOOST_ROOT "~/projects/boost")
 find_package(Boost REQUIRED COMPONENTS chrono filesystem system timer unit_test_framework)
