@@ -19,9 +19,9 @@ add_executable(search_test4 search_test4.cpp)
 target_compile_definitions(search_test4 PRIVATE "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(search_test4 Boost::headers Boost::unit_test_framework)
 
-# add_executable(search_test5 search_test5.cpp)
-# target_compile_definitions(search_test5 PRIVATE "BOOST_TEST_DYN_LINK=1")
-# target_link_libraries(search_test5 Boost::headers Boost::unit_test_framework)
+add_executable(search_test5 search_test5.cpp)
+target_compile_definitions(search_test5 PRIVATE "BOOST_TEST_DYN_LINK=1")
+target_link_libraries(search_test5 Boost::headers Boost::filesystem Boost::unit_test_framework)
 
 add_executable(search_test6 search_test6.cpp)
 target_compile_definitions(search_test6 PRIVATE "BOOST_TEST_DYN_LINK=1")
