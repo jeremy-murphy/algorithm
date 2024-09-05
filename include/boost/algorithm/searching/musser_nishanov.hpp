@@ -18,18 +18,25 @@
 #include <boost/mp11/function.hpp>
 #include <boost/mp11/integral.hpp>
 #include <boost/next_prior.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/variant2/variant.hpp>
 
 #include <iterator>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 
 namespace boost { namespace algorithm {
+
+namespace detail {
+
+template <typename CorpusIter, typename Trait>
+using hashable = typename mp11::mp_and<
+        std::is_base_of<std::random_access_iterator_tag,
+                        typename std::iterator_traits<CorpusIter>::iterator_category>,
+        mp11::mp_to_bool<std::integral_constant<decltype(Trait::suffix_size), Trait::suffix_size>>
+    >::type;
+}
 
 /**
  * One class, two identities based on corpus iterator and the suffix size trait.
@@ -44,14 +51,8 @@ class musser_nishanov;
  * Musser-Nishanov Accelerated Linear search algorithm.
  */
 template <typename PatIter, typename CorpusIter, typename Trait>
-class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename disable_if<
-    typename mp11::mp_and<
-        std::is_base_of<std::random_access_iterator_tag,
-                        typename std::iterator_traits<CorpusIter>::iterator_category>,
-        mp11::mp_to_bool<mp11::mp_value<Trait::suffix_size>>
-    >::type 
->::type>
+class musser_nishanov<PatIter, CorpusIter, Trait,
+                      typename disable_if<detail::hashable<CorpusIter, Trait>>::type>
 {
     boost::algorithm::accelerated_linear<PatIter, CorpusIter> searcher;
 
@@ -72,13 +73,7 @@ public:
  */
 template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename enable_if<
-    typename mp11::mp_and<
-        std::is_base_of<std::random_access_iterator_tag,
-                        typename std::iterator_traits<CorpusIter>::iterator_category>,
-        mp11::mp_to_bool<mp11::mp_value<Trait::suffix_size>>
-    >::type 
->::type>
+typename enable_if<detail::hashable<CorpusIter, Trait>>::type>
 {
     using HAL = boost::algorithm::hashed_accelerated_linear<PatIter, CorpusIter, Trait>;
     using AL = boost::algorithm::accelerated_linear<PatIter, CorpusIter>;
@@ -95,6 +90,26 @@ typename enable_if<
                          : SearcherVariant{HAL(first, last)};
     }
 
+    // A generic lambda written out by hand.
+    class SearcherVisitor
+    {
+        CorpusIter m_first, m_last;
+
+    public:
+        constexpr
+        SearcherVisitor(CorpusIter first, CorpusIter last)
+            : m_first{first}
+            , m_last{last}
+        {}
+
+        template<typename Searcher>
+        constexpr
+        std::pair<CorpusIter, CorpusIter> operator()(Searcher &&s) const
+        {
+            return s(m_first, m_last);
+        }
+    };
+
 public:
     musser_nishanov(PatIter pat_first, PatIter pat_last)
         : searcher{select_searcher(pat_first, pat_last)}
@@ -103,7 +118,7 @@ public:
     std::pair<CorpusIter, CorpusIter>
     operator()(CorpusIter first, CorpusIter last) const
     {
-        return boost::variant2::visit([&](auto const& s){ return s(first, last); }, searcher);
+        return boost::variant2::visit(SearcherVisitor{first, last}, searcher);
     }
 
     template <typename Range>
@@ -138,7 +153,7 @@ musser_nishanov_search(CorpusIter corpus_first, CorpusIter corpus_last,
 
 template <typename patIter, typename CorpusRange>
 typename boost::disable_if_c<
-    boost::is_same<CorpusRange, patIter>::value, 
+    std::is_same<CorpusRange, patIter>::value,
     std::pair<typename boost::range_iterator<CorpusRange>::type,
               typename boost::range_iterator<CorpusRange>::type> >
 ::type
