@@ -13,6 +13,8 @@ target_sources(boost_algorithm PUBLIC
     "include/boost/algorithm/searching/musser_nishanov.hpp"
     "include/boost/algorithm/searching/accelerated_linear.hpp"
     "include/boost/algorithm/searching/hashed_accelerated_linear.hpp"
+    "include/boost/algorithm/searching/boyer_moore.hpp"
+    "include/boost/algorithm/searching/boyer_moore_horspool.hpp"
     "include/boost/algorithm/searching/detail/mn_traits.hpp"
 )
 target_include_directories(boost_algorithm INTERFACE include)
